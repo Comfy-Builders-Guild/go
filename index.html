@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Opening Discord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap">
+<style>
+  :root {
+    --band: #3f464e;
+    --page: #e9ebee;
+    --text: #073763;
+    --soft: #4a5a70;
+    --line: #c4ccd6;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --page: #2a2f35; --text: #e8eaed; --soft: #aab4c0; --line: #4a525c; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--page); color: var(--text);
+    font-family: Montserrat, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: grid; grid-template-rows: auto 1fr;
+  }
+  header { background: var(--band); padding: 18px 24px; }
+  header h1 {
+    margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: .06em;
+    background: linear-gradient(90deg, #d8a8ff, #abaaeb, #7aaed5, #45b2bf);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  main { display: grid; place-items: center; padding: 32px 24px; }
+  .box { max-width: 30rem; text-align: center; }
+  .box h2 { font-size: 1.4rem; margin: 0 0 .6rem; }
+  .box p { color: var(--soft); line-height: 1.6; margin: 0 0 1.4rem; }
+  a.btn {
+    display: inline-block; padding: .7rem 1.2rem; border-radius: 6px;
+    border: 1px solid var(--line); color: var(--text); text-decoration: none; font-weight: 700;
+  }
+  a.btn:hover { border-color: #45b2bf; }
+  a.btn:focus-visible { outline: 3px solid #45b2bf; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<header><h1>Builders Guild</h1></header>
+<main>
+  <div class="box">
+    <h2 id="title">Opening Discord…</h2>
+    <p id="msg">If the Discord app is installed, it should pop open on the right spot. Otherwise you'll land in Discord in your browser.</p>
+    <a class="btn" id="web" href="https://discord.com/app">Open in my browser instead</a>
+  </div>
+</main>
+<script>
+(function () {
+  // Link format: ...?to=channels/SERVER/CHANNEL(/MESSAGE)   (a full https://discord.com/channels/... link works too)
+  var raw = new URLSearchParams(location.search).get('to') || '';
+  raw = raw.trim().replace(/^https?:\/\/(ptb\.|canary\.)?discord(app)?\.com\//i, '').replace(/^\/+/, '');
+  // Only Discord channel and message links are allowed, so this page can't send anyone somewhere else
+  if (!/^channels\/\d+(\/\d+){0,2}$/.test(raw)) {
+    document.getElementById('title').textContent = 'That link is broken';
+    document.getElementById('msg').textContent = 'It doesn\u2019t point to a Discord channel or message. Let a Builder rep know which link you clicked.';
+    return;
+  }
+  var web = 'https://discord.com/' + raw;
+  var app = 'discord://discord.com/' + raw;
+  document.getElementById('web').href = web;
+
+  // Try the app; if the page is still in front a moment later, the app didn't open, so go to the browser
+  var left = false;
+  var gone = function () { left = true; };
+  window.addEventListener('blur', gone);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) gone(); });
+  location.href = app;
+  setTimeout(function () { if (!left) location.replace(web); }, 2500);
+})();
+</script>
+</body>
+</html>

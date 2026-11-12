@@ -55,13 +55,13 @@
 </main>
 <script>
 (function () {
-  // Link format: ...?to=channels/SERVER/CHANNEL(/MESSAGE)   (a full https://discord.com/channels/... link works too)
+  // Link format: ...?to=channels/SERVER/CHANNEL(/MESSAGE) or ?to=users/DISCORD_ID (a full https://discord.com/... link works too)
   var raw = new URLSearchParams(location.search).get('to') || '';
   raw = raw.trim().replace(/^https?:\/\/(ptb\.|canary\.)?discord(app)?\.com\//i, '').replace(/^\/+/, '');
-  // Only Discord channel and message links are allowed, so this page can't send anyone somewhere else
-  if (!/^channels\/\d+(\/\d+){0,2}$/.test(raw)) {
+  // Only Discord channel/message links and player profiles (users/ID) are allowed, so this page can't send anyone somewhere else
+  if (!/^(channels\/\d+(\/\d+){0,2}|users\/\d+)$/.test(raw)) {
     document.getElementById('title').textContent = 'That link is broken';
-    document.getElementById('msg').textContent = 'It doesn\u2019t point to a Discord channel or message. Let a Builder rep know which link you clicked.';
+    document.getElementById('msg').textContent = 'It doesn\u2019t point to a Discord channel, message, or player. Let a Builder rep know which link you clicked.';
     return;
   }
   var web = 'https://discord.com/' + raw;

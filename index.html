@@ -49,7 +49,7 @@
 <main>
   <div class="box">
     <h2 id="title">Opening Discord…</h2>
-    <p id="msg">If the Discord app is installed, it should pop open on the right spot. Otherwise you'll land in Discord in your browser.</p>
+    <p id="msg">If the Discord app is installed, it should pop open on the right spot and this tab will close. Otherwise you'll land in Discord in your browser.</p>
     <a class="btn" id="web" href="https://discord.com/app">Open in my browser instead</a>
   </div>
 </main>
@@ -69,8 +69,15 @@
   document.getElementById('web').href = web;
 
   // Try the app; if the page is still in front a moment later, the app didn't open, so go to the browser
+  // Once the app opens (this tab loses focus), close this tab so it doesn't hang around.
+  // Browsers allow that for a tab opened by a link with nothing else in its history; if a browser
+  // won't, the tab just stays with the "Opening Discord" message.
   var left = false;
-  var gone = function () { left = true; };
+  var gone = function () {
+    if (left) return;
+    left = true;
+    setTimeout(function () { try { window.close(); } catch (e) {} }, 800);
+  };
   window.addEventListener('blur', gone);
   document.addEventListener('visibilitychange', function () { if (document.hidden) gone(); });
   location.href = app;

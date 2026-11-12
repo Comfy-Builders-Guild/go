@@ -49,7 +49,7 @@
 <main>
   <div class="box">
     <h2 id="title">Opening Discord…</h2>
-    <p id="msg">If the Discord app is installed, it should pop open on the right spot, and this tab closes on its own after 30 seconds. If your browser asks to open Discord, tick Always allow so it skips this next time. Otherwise you'll land in Discord in your browser.</p>
+    <p id="msg">If the Discord app is installed, it should pop open on the right spot, and this tab closes on its own after 15 seconds. If your browser asks to open Discord, tick Always allow so it skips this next time. Otherwise you'll land in Discord in your browser.</p>
     <a class="btn" id="web" href="https://discord.com/app">Open in my browser instead</a>
   </div>
 </main>
@@ -70,13 +70,13 @@
 
   // Try the app; if the page is still in front a moment later, the app didn't open, so go to the browser
   // Once Discord starts opening (this tab loses focus, which includes the browser's "Open Discord?"
-  // prompt), the tab closes itself 30 seconds later: plenty of time to click Open on the prompt.
+  // prompt), the tab closes itself 15 seconds later: plenty of time to click Open on the prompt.
   // (Browsers allow closing a tab opened by a link; if one won't, the tab just stays.)
   var left = false;
   var gone = function () {
     if (left) return;
     left = true;
-    setTimeout(function () { try { window.close(); } catch (e) {} }, 30000);
+    setTimeout(function () { try { window.close(); } catch (e) {} }, 15000);
   };
   window.addEventListener('blur', gone);
   document.addEventListener('visibilitychange', function () { if (document.hidden) gone(); });
